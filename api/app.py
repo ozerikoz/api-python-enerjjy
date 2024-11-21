@@ -40,6 +40,10 @@ def fetch_address_from_cep(cep):
     except Exception as e:
         raise Exception(f"Erro ao consultar o ViaCEP: {str(e)}")
 
+@app.route("/")
+def home():
+    return jsonify({"message": "API EnerJJy - Bem-vindo!"}), 200
+
 # endpoint para criar um usuário
 @app.route("/users", methods=["POST"])
 def create_user():
