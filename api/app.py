@@ -130,6 +130,65 @@ def create_user():
         cursor.close()
         connection.close()
 
+# endpoint de login para autenticar o usuario
+@app.route("/users/login", methods=["POST"])
+def login():
+    data = request.get_json()
+
+    # Validação de entradas
+    if not data.get("email") or not data.get("senha"):
+        return jsonify({"error": "Email e senha são obrigatórios"}), 400
+
+    email = data["email"]
+    senha = data["senha"]
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Verificar se o email e a senha estão corretos
+        cursor.execute(
+            """
+            SELECT u.id_usuario, u.cpf, u.nome, u.telefone, u.email, 
+                   e.logradouro, e.cep, e.bairro, e.cidade, e.estado
+            FROM tbl_usuarios u
+            LEFT JOIN tbl_enderecos e ON u.id_usuario = e.id_usuario
+            WHERE u.email = :1 AND u.senha = :2
+            """,
+            [email, senha]
+        )
+        rows = cursor.fetchall()
+
+        if not rows:
+            return jsonify({"error": "Email ou senha inválidos"}), 401
+
+        # Construir o objeto do usuário
+        user = {
+            "id_usuario": rows[0][0],
+            "cpf": rows[0][1],
+            "nome": rows[0][2],
+            "telefone": rows[0][3],
+            "email": rows[0][4],
+            "endereco": []
+        }
+
+        for row in rows:
+            if row[5]:  # Verificar se o endereço está presente
+                user["endereco"].append({
+                    "logradouro": row[5],
+                    "cep": row[6],
+                    "bairro": row[7],
+                    "cidade": row[8],
+                    "estado": row[9]
+                })
+
+        return jsonify(user), 200
+    except Exception as e:
+        return jsonify({"error": f"Erro ao processar login: {str(e)}"}), 500
+    finally:
+        cursor.close()
+        connection.close()
+
 # endpoint para listar todos os usuários
 @app.route("/users", methods=["GET"])
 def list_users():
