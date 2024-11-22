@@ -103,6 +103,34 @@ A API está disponível publicamente no seguinte endereço:
     }
     ```
 
+- **POST `/users/login`**: Login / autenticar usuário.
+  - **Body**:
+    ```json
+    {
+      "email": "joao@example.com",
+      "senha": "senha123",
+    }
+    ```
+  - **Resposta**:
+    ```json
+    {
+       "cpf": "12345678901",
+       "email": "joao.silva@example.com",
+       "endereco": [
+           {
+               "bairro": "Sé",
+               "cep": "01001000",
+               "cidade": "São Paulo",
+               "estado": "SP",
+               "logradouro": "Rua das Flores"
+           }
+       ],
+       "id_usuario": 1,
+       "nome": "João Silva",
+       "telefone": "11987654321"
+    }
+    ```
+
 - **GET `/users`**: Listar todos os usuários.
   - **Resposta**:
     ```json
