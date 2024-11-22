@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 
 # Configuração do CORS para permitir requisições do front-end
-CORS(app, origins=["https://meu-front-end.vercel.app", "http://localhost:3000"])
+CORS(app, origins=["https://enerjjy.vercel.app", "http://localhost:3000"])
 
 
 
