@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS # type: ignore
 import oracledb
 from dotenv import load_dotenv
 import os
@@ -6,6 +7,11 @@ import requests
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
+
+# Configuração do CORS para permitir requisições do front-end
+CORS(app, origins=["https://meu-front-end.vercel.app", "http://localhost:3000"])
+
+
 
 load_dotenv()
 
