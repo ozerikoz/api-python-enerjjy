@@ -294,19 +294,27 @@ def update_user(id_usuario):
     cursor = connection.cursor()
 
     try:
-        # atualizar dados do usuário
-        cursor.execute("""
+        update_query = """
             UPDATE tbl_usuarios
-            SET cpf = :1, nome = :2, telefone = :3, email = :4, senha = :5
-            WHERE id_usuario = :6
-        """, [
+            SET cpf = :1, nome = :2, telefone = :3, email = :4
+        """
+        update_params = [
             data.get("cpf"),
             data.get("nome"),
             data.get("telefone"),
             data.get("email"),
-            data.get("senha"),
-            id_usuario
-        ])
+        ]
+
+        # adiciona a senha apenas se fornecida
+        if "senha" in data and data["senha"]:
+            update_query += ", senha = :5"
+            update_params.append(data["senha"])
+
+        update_query += " WHERE id_usuario = :6"
+        update_params.append(id_usuario)
+
+        # executa a atualização do usuário
+        cursor.execute(update_query, update_params)
 
         # atualizar endereço, se o CEP foi fornecido
         if "cep" in data:
